@@ -12,3 +12,6 @@ compile "0:/circorbit" to "1:/circorbit.ks".
 //manouver execution
 //copypath("0:/execManouver", "").
 compile "0:/execManouver" to "1:/execManouver.ks".
+
+//compile "0:/SuicideBurn" to "1:/SuicideBurn.ks".
+copypath("0:/SuicideBurn", "").

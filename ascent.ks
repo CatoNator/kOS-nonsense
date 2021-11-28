@@ -3,26 +3,40 @@ runoncepath("circorbit").
 //countdown function - sets everything up and launches rocket
 function countdown
 {
+    SET V0 TO GETVOICE(0). // Gets a reference to the zero-th voice in the chip.
+    
     print "5: SAS off".
 
     SAS off.
 
+    //beep!
+    V0:PLAY( NOTE(440, 0.5) ).
+
     wait 1.
 
-    print "4: Locking throttle to full".
+    print "4".
 
-    lock throttle to 1.
-
-    wait 1. 
-
-    print "3".
+    //beep!
+    V0:PLAY( NOTE(440, 0.5) ).
 
     wait 1. 
 
-    print "2".
+    print "3: Locking attitude".
 
     //locks direction straigh upward - pitching coming later
     lock steering to up  + r(0, 0, 180). //fixes roll
+
+    //beep!
+    V0:PLAY( NOTE(440, 0.5) ).
+
+    wait 1. 
+
+    print "2: Locking throttle to full".
+
+    lock throttle to 1.
+
+    //beep!
+    V0:PLAY( NOTE(440, 0.5) ).
 
     wait 1. 
 
@@ -30,12 +44,18 @@ function countdown
 
     stage.
 
+    //beep!
+    V0:PLAY( NOTE(440, 0.5) ).
+
     wait 1.
 
     //liftoff!!
     stage.
 
     print "0: Liftoff!".
+
+    //beep!
+    V0:PLAY( NOTE(523, 1) ).
 
     wait 1.
 }
@@ -56,7 +76,9 @@ function adjustThrustToTWR
 
 function ditchStage
 {
-    wait until stage:ready.
+    print "Staging.".
+    
+    //wait until stage:ready.
     stage.
     //lock throttle to 0.
     wait 1.
@@ -66,19 +88,25 @@ function ditchStage
 //autostaging
 function autoStage
 {
-    //autostaging should be based on stage deltaV instead of thrust (it can be messed with by the thrust change at t-1min to apoapsis)
     //if not (defined startThrust)
     //{
     //    declare global startThrust to ship:availablethrust.
     //}
 
-    //if (ship:availablethrust < (startThrust  - 10))
+    //autostaging used to be based on fuel, but this causes issues with asparagus staging
+    //availablethrust should return the thrust the ship would have if the throttle was maxed, so theoretically it shouldn't be altered by throttle
+
+    //availablethrust apparently sometimes returns infinity? that's not good
+
     set fuel to stage:resourcesLex["LiquidFuel"]:amount + stage:resourcesLex["SolidFuel"]:amount.
 
     if (fuel = 0)
+
+    //if (ship:availablethrust < (startThrust  - 10))
     {
         ditchStage().
-        //declare global startThrust to ship:availablethrust.
+        wait 1.
+        declare global startThrust to ship:availablethrust.
         //adjustThrustToTWR(desiredTWR).
     }
 }
@@ -136,7 +164,7 @@ function beginascent
     wait 1.
 
     //orbit is round when our current height is lower than the apoapsis
-    until (apoapsis >= targetapo or apoapsis > altitude)
+    until (apoapsis >= targetapo)
     {
         //adjust twr above 20km, I might change this to follow apoapsis ETA later
         if (altitude > 20000 and desiredTWR > 1.3)
@@ -173,5 +201,5 @@ function beginascent
     print "Extendables deployed and lights on".
 
     //shite circularization script
-    circularize(altitude - 1000, targetHeading).
+    circularize(apoapsis - 1500, targetHeading).
 }

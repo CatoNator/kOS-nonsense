@@ -42,7 +42,7 @@ function circularize
     lock throttle to 0.66.
 
     //if apoapsis is above us, it prrrrrrobably means that the orbit has turned around
-    until (periapsis > wantedPeriapsisHeight or apoapsis > altitude + 1000)
+    until (periapsis > wantedPeriapsisHeight) //or apoapsis > altitude + 1000
     {
         autoStage().
     }

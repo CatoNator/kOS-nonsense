@@ -2,15 +2,15 @@ function vISP
 {
     list engines in engineList.
     set sumOne to 0.
-    set sumeTwo to 0.
+    set sumTwo to 0.
 
-    for (eng in engineList)
+    for eng in engineList
     {
-        if (eng:ignition
+        if (eng:ignition)
         {
             set sumOne to sumOne + eng:availablethrust.
             set sumTwo to sumTwo + eng:availablethrust / eng:ISP.
-        })
+        }
     }
 
     if (sumTwo > 0)
@@ -37,10 +37,10 @@ function burnTime
         wait until (vISP() > 0).
     }
 
-    set finalMass to ship:mass / (constant:E^(delV/(vISP()*constant:g0))).
+    set finalMass to ship:mass / (constant:E^(dV/(vISP()*constant:g0))).
     set startAcc to ship:availablethrust / ship:mass.
     set finalAcc to ship:availablethrust / finalMass.
-    return 2*delV / (startAcc+finalAcc).
+    return 2*dV / (startAcc+finalAcc).
 }
 
 function calculateStartTIme
@@ -50,7 +50,7 @@ function calculateStartTIme
     //calculate start time based on mnode
 
     //burn starts at ETA to node - burn time / 2; recommended time to start any burn
-    return return time:seconds + mnode:eta - burnTime(mnode)/2.
+    return time:seconds + mnode:eta - burnTime(mnode)/2.
 }
 
 function startBurn
@@ -94,11 +94,11 @@ function reduceThrottle
     set reductionStartTime to time:seconds.
     set reductionStopTime to time:seconds + reduceTime.
 
-    set scale to 0.1^/1/reducetime).
+    set scale to 0.1^(1/reducetime).
 
-    lock throttle to scale^(time:seconds - startTime).
+    lock throttle to scale^(time:seconds - reductionStartTime).
 
-    wait until time:seconds > stopTime.
+    wait until time:seconds > reductionStopTime.
 
     lock throttle to 0.1.
 }
@@ -108,7 +108,7 @@ function manouverComplete
     parameter mnode.
     parameter startVec.
 
-    if (vang(mnode:burnvector, startVec) > 5)
+    if (vang(mnode:burnvector, startVec) > 20)
     {
         return true.
     }
@@ -148,8 +148,8 @@ function execManNode
 
         //performing burn
         lockHeading(mnode).
-        startBurn(mnode, startTime).
-        reduceThrottle(mnode).
+        startBurn(startTime).
+        reduceThrottle(mnode, startReduceTime).
         endBurn(mnode, startVector).
 
         print "Manouver perform completed".
@@ -162,4 +162,4 @@ function execManNode
     }
 }
 
-execManNode().
+execManNode.
