@@ -9,30 +9,25 @@ function planOrbit
 
 function circularizeOrbit
 {
-    parameter wantedHeading.
+    parameter wantedApoapsis.
 	
 	print "Slightly less scuffed circularization begins".
 	
-	//epic prograde moment
-	set hUnitVector to heading(wantedHeading, 0).
+	local bm is BODY:MU.
+	local br is BODY:RADIUS.
+	local ra is br + apoapsis.
 	
-	//Calculate circular orbit velocity
+	//Velocity for circularization
+	local srfcGrav is (bm / br^2).
+	local v1 is (br * SQRT(srfcGrav / (br + wantedApoapsis))).
 	
-	//v = sqrt(GM(2/r - 1/a))
+	//Velocity at apoapsis
+	local v2 is SQRT(bm * ((2 / ra) - (1 / SHIP:ORBIT:SEMIMAJORAXIS))).
 	
-	//semi-major axis
-	set sma to (apoapsis + periapsis) / 2.
+	//dV = tV - cV
+	local deltaV is v1 - v2.
 	
-	//Scalar, need horizontal vector
-	set desiredVelocity to SQRT(constant:G * KERBIN:MASS * (2/apoapsis - 1/sma)).
-	
-	set v1 to SHIP:VELOCITY:ORBIT.
-	
-	set v2 to V(desiredVelocity, desiredVelocity, desiredVelocity) * hUnitVector.
-	
-	set additionalVelocity to v2 - v1.
-	
-	ADD NODE(SHIP:OBT:ETA:APOAPSIS,  additionalVelocity:X, additionalVelocity:Y, additionalVelocity:Z).
+	ADD NODE(TIME:SECONDS + ETA:APOAPSIS, 0, 0, deltaV).
 	
 	print "Plotted maneuver".
 	

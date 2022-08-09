@@ -203,5 +203,5 @@ function beginascent
     //circularize(apoapsis - 1500, targetHeading).
 	
 	//Better circularization script?
-	circularizeOrbit(targetHeading).
+	circularizeOrbit(targetApo).
 }
