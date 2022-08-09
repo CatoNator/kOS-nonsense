@@ -10,14 +10,14 @@ function countdown
     SAS off.
 
     //beep!
-    V0:PLAY( NOTE(440, 0.5) ).
+    V0:PLAY( NOTE(440, 0.25) ).
 
     wait 1.
 
     print "4".
 
     //beep!
-    V0:PLAY( NOTE(440, 0.5) ).
+    V0:PLAY( NOTE(440, 0.25) ).
 
     wait 1. 
 
@@ -27,7 +27,7 @@ function countdown
     lock steering to up  + r(0, 0, 180). //fixes roll
 
     //beep!
-    V0:PLAY( NOTE(440, 0.5) ).
+    V0:PLAY( NOTE(440, 0.25) ).
 
     wait 1. 
 
@@ -36,7 +36,7 @@ function countdown
     lock throttle to 1.
 
     //beep!
-    V0:PLAY( NOTE(440, 0.5) ).
+    V0:PLAY( NOTE(440, 0.25) ).
 
     wait 1. 
 
@@ -45,7 +45,7 @@ function countdown
     stage.
 
     //beep!
-    V0:PLAY( NOTE(440, 0.5) ).
+    V0:PLAY( NOTE(440, 0.25) ).
 
     wait 1.
 
@@ -71,14 +71,14 @@ function adjustThrustToTWR
     parameter wantedTWR.
 
     //twr = weight/thrust
-    lock throttle to min(1, wantedTWR * currGrav(ship:altitude) * (ship:mass/ship:availablethrust)).
+    set throttle to min(1, wantedTWR * currGrav(ship:altitude) * (ship:mass/ship:availablethrust)).
 }
 
 function ditchStage
 {
     print "Staging.".
     
-    //wait until stage:ready.
+    wait until stage:ready.
     stage.
     //lock throttle to 0.
     wait 1.
@@ -88,21 +88,20 @@ function ditchStage
 //autostaging
 function autoStage
 {
-    //if not (defined startThrust)
-    //{
-    //    declare global startThrust to ship:availablethrust.
-    //}
+    if not (defined startThrust)
+    {
+        declare global startThrust to ship:availablethrust.
+    }
 
     //autostaging used to be based on fuel, but this causes issues with asparagus staging
     //availablethrust should return the thrust the ship would have if the throttle was maxed, so theoretically it shouldn't be altered by throttle
 
     //availablethrust apparently sometimes returns infinity? that's not good
 
-    set fuel to stage:resourcesLex["LiquidFuel"]:amount + stage:resourcesLex["SolidFuel"]:amount.
+    //set fuel to stage:resourcesLex["LiquidFuel"]:amount + stage:resourcesLex["SolidFuel"]:amount.
 
-    if (fuel = 0)
-
-    //if (ship:availablethrust < (startThrust  - 10))
+    //if (fuel = 0)
+    if (ship:availablethrust < (startThrust  - 10))
     {
         ditchStage().
         wait 1.
@@ -201,5 +200,8 @@ function beginascent
     print "Extendables deployed and lights on".
 
     //shite circularization script
-    circularize(apoapsis - 1500, targetHeading).
+    //circularize(apoapsis - 1500, targetHeading).
+	
+	//Better circularization script?
+	circularizeOrbit(targetHeading).
 }
