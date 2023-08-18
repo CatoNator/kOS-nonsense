@@ -62,7 +62,7 @@ function circularize
         autoStage().
     }
 
-    set throttle to 0.
+    lock throttle to 0.
 
     wait 1.
     print "Circularization completed.".

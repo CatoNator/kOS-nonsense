@@ -1,3 +1,5 @@
 runoncepath("circorbit").
 
-circularizeOrbit(90000).
+parameter targetApoapsis.
+
+circularizeOrbit(targetApoapsis).

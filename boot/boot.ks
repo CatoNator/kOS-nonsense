@@ -2,7 +2,7 @@
 compile"0:/launch"  to "1:/launch.ks".
 
 //liftoff
-copypath("0:/ascent", "").
+copypath("0:/ascent", "1:/ascent.ks").
 //compile "0:/ascent" to "1:/ascent.ks".
 
 //orbit circularization

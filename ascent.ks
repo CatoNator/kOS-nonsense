@@ -41,7 +41,7 @@ function countdown
     wait 1. 
 
     print "1: Ignition".
-
+    
     stage.
 
     //beep!
@@ -71,7 +71,7 @@ function adjustThrustToTWR
     parameter wantedTWR.
 
     //twr = weight/thrust
-    set throttle to min(1, wantedTWR * currGrav(ship:altitude) * (ship:mass/ship:availablethrust)).
+    lock throttle to min(1, wantedTWR * currGrav(ship:altitude) * (ship:mass/ship:availablethrust)).
 }
 
 function ditchStage
@@ -123,11 +123,9 @@ function endAscent
 function beginascent
 {
     //apoapsis / orbit height target
-    //set targetApo to 80000.
     parameter targetApo.
 
     //heading which to follow (not inclination)
-    //set targetHeading to 90.
     parameter targetHeading.
 
     //altitude at which the pitchover happens
